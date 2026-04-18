@@ -1,5 +1,4 @@
 import { LoginSchema } from "#shared/zod/login.schema";
-import { th } from "zod/locales";
 
 export default defineEventHandler(async (event) => {
   const result = await readValidatedBody(event, (body) =>
@@ -7,47 +6,53 @@ export default defineEventHandler(async (event) => {
   );
 
   if (!result.success) {
-    return {
+    throw createError({
       statusCode: 400,
-      message: "Datos de inicio de sesión inválidos",
+      statusMessage: "Datos de inicio de sesión inválidos",
       data: result.error.format(),
-    };
+    });
   }
 
   const { email, password } = result.data;
+  const config = useRuntimeConfig();
 
   try {
-    const config = useRuntimeConfig();
-    const response = await $fetch<{ success: boolean; message: string; user?: any; error?: string }>(
-      `${config.public.apiBase}/remote/login`,
-      {
-        method: "POST",
-        body: { email, password },
-      }
-    );
+    const response = await $fetch<any>(`${config.public.apiBase}/remote/login`, {
+      method: "POST",
+      body: { email, password },
+    });
 
-    if (response.success) {
-      await setUserSession(event, {
-        user: {
-          email: email,
-          token: response, // El api retorna un usuario en vez de un token
-        },
+    console.log("[login.post] response:", response);
 
-      });
-
-      return {
-        message: response.message || "Login exitoso",
-      };
-    } else {
+    if (!response?.success) {
       throw createError({
         statusCode: 401,
-        statusMessage: response.message || "Credenciales incorrectas",
+        statusMessage: response?.message || "Credenciales incorrectas",
       });
     }
+
+    await setUserSession(event, {
+      user: response.user || {
+        email,
+      },
+      token: response.token || response.data?.token || null,
+    });
+
+    return {
+      success: true,
+      message: response.message || "Login exitoso",
+      user: response.user || { email },
+    };
   } catch (error: any) {
+    console.error("[login.post] error:", error);
+
     throw createError({
-      statusCode: error.response?.status || 401,
-      statusMessage: error.data?.message || "Credenciales incorrectas",
+      statusCode: error?.response?.status || error?.statusCode || 401,
+      statusMessage:
+        error?.data?.message ||
+        error?.response?._data?.message ||
+        error?.statusMessage ||
+        "Credenciales incorrectas",
     });
   }
 });

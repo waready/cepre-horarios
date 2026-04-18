@@ -12,9 +12,9 @@ export default defineNuxtConfig({
     baseURL: '/'
   },
 
-   runtimeConfig: {
+  runtimeConfig: {
     public: {
-      apiBase: 'https://cepreapi.waready.org.pe/api'
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'https://cepreapi.waready.org.pe/api'
     }
   },
   routeRules: {
