@@ -137,6 +137,38 @@ const columns: TableColumn<DocenteTransformed>[] = [
     }
   },
   {
+    accessorKey: 'cursos_dictados',
+    header: 'Cursos Asignados',
+    cell: ({ row }) => {
+      const cursosStr = row.original.cursos_dictados
+      if (!cursosStr)
+        return h(
+          'span',
+          { class: 'text-xs text-gray-400 italic' },
+          'Sin cursos'
+        )
+
+      const cursos = cursosStr.split(',').map((c: string) => c.trim())
+
+      return h(
+        'div',
+        { class: 'flex flex-wrap gap-1 max-w-[300px]' },
+        cursos.map((c: string) => {
+          return h(
+            UBadge,
+            {
+              variant: 'soft',
+              color: 'neutral',
+              size: 'sm',
+              class: 'text-[10px] font-bold border whitespace-nowrap'
+            },
+            () => c
+          )
+        })
+      )
+    }
+  },
+  {
     accessorKey: 'grupos',
     header: 'Grupos Asignados',
     cell: ({ row }) => {
