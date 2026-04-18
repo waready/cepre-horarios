@@ -1,29 +1,30 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from "@nuxt/ui";
-const { clear } = useUserSession();
+import type { NavigationMenuItem } from '@nuxt/ui'
+
+const { clear } = useUserSession()
 const logout = async () => {
-  clear();
-  navigateTo("/login");
-};
+  clear()
+  navigateTo('/login')
+}
 
 const links = [
   [
     {
-      label: "General",
-      icon: "i-lucide-user",
-      to: "/dashboard/settings",
-      exact: true,
+      label: 'General',
+      icon: 'i-lucide-user',
+      to: '/dashboard/settings',
+      exact: true
     },
     {
-      label: "Members",
-      icon: "i-lucide-users",
-      to: "/dashboard/settings/members",
+      label: 'Members',
+      icon: 'i-lucide-users',
+      to: '/dashboard/settings/members'
     },
     {
-      label: "Security",
-      icon: "i-lucide-shield",
-      to: "/dashboard/settings/security",
-    },
+      label: 'Security',
+      icon: 'i-lucide-shield',
+      to: '/dashboard/settings/security'
+    }
   ],
   [
     // {
@@ -32,12 +33,15 @@ const links = [
     //   to: "https://ui.nuxt.com/docs/getting-started/installation/nuxt",
     //   target: "_blank",
     // },
-  ],
-] satisfies NavigationMenuItem[][];
+  ]
+] satisfies NavigationMenuItem[][]
 </script>
 
 <template>
-  <UDashboardPanel id="settings" :ui="{ body: 'lg:py-12' }">
+  <UDashboardPanel
+    id="settings"
+    :ui="{ body: 'lg:py-12' }"
+  >
     <template #header>
       <UDashboardNavbar title="Settings">
         <template #leading>
@@ -45,15 +49,23 @@ const links = [
         </template>
         <template #right>
           <UColorModeButton />
-          <UButton variant="ghost" color="error" @click="logout"
-            >Logout</UButton
+          <UButton
+            variant="ghost"
+            color="error"
+            @click="logout"
           >
+            Logout
+          </UButton>
         </template>
       </UDashboardNavbar>
 
       <UDashboardToolbar>
         <!-- NOTE: The `-mx-1` class is used to align with the `DashboardSidebarCollapse` button here. -->
-        <UNavigationMenu :items="links" highlight class="-mx-1 flex-1" />
+        <UNavigationMenu
+          :items="links"
+          highlight
+          class="-mx-1 flex-1"
+        />
       </UDashboardToolbar>
     </template>
 

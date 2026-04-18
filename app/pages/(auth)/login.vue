@@ -1,39 +1,39 @@
 <script setup lang="ts">
-import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
-import { LoginSchema } from "#shared/zod/login.schema";
-import type { LoginTypeZodSchema } from "#shared/zod/login.schema";
+import type { FormSubmitEvent, AuthFormField } from '@nuxt/ui'
+import { LoginSchema } from '#shared/zod/login.schema'
+import type { LoginTypeZodSchema } from '#shared/zod/login.schema'
 
-const { login } = useAuthApi();
+const { login } = useAuthApi()
 
 const fields: AuthFormField[] = [
   {
-    name: "email",
-    type: "email",
-    label: "Email",
-    placeholder: "Ingrese su email",
-    defaultValue: "",
-    required: true,
+    name: 'email',
+    type: 'email',
+    label: 'Email',
+    placeholder: 'Ingrese su email',
+    defaultValue: '',
+    required: true
   },
   {
-    name: "password",
-    label: "Contraseña",
-    type: "password",
-    placeholder: "Ingrese su contraseña",
-    required: true,
+    name: 'password',
+    label: 'Contraseña',
+    type: 'password',
+    placeholder: 'Ingrese su contraseña',
+    required: true
   },
   {
-    name: "remember",
-    label: "Recordarme",
-    type: "checkbox",
-  },
-];
+    name: 'remember',
+    label: 'Recordarme',
+    type: 'checkbox'
+  }
+]
 
 async function onSubmit(payload: FormSubmitEvent<LoginTypeZodSchema>) {
   try {
-    await login(payload.data);
+    await login(payload.data)
   } catch (error) {
     // El error visual (toast) ya se maneja en el composable
-    console.error("Error en login:", error);
+    console.error('Error en login:', error)
   }
 }
 </script>

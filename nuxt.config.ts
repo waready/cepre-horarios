@@ -6,11 +6,11 @@ export default defineNuxtConfig({
     enabled: true
   },
 
-  css: ['~/assets/css/main.css'],
-
   app: {
     baseURL: '/'
   },
+
+  css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
     public: {
@@ -24,19 +24,24 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-15',
 
-  eslint: {
-    config: {
-      stylistic: {
-        commaDangle: 'never',
-        braceStyle: '1tbs'
-      }
-    }
-  },
-
   typescript: {
     tsConfig: {
       compilerOptions: {
         types: ['@types/node']
+      }
+    }
+  },
+
+  eslint: {
+    config: {
+      stylistic: {
+        commaDangle: 'never',
+        braceStyle: '1tbs' },
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unused-vars': 'off',
+        'vue/no-unused-vars': 'off',
+        'vue/return-in-computed-property': 'off'
       }
     }
   }

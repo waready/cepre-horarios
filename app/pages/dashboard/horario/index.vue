@@ -4,74 +4,74 @@ import type {
   Carga,
   CargaAcademicaResponse,
   DisponibilidadResponse,
-  HorasDocenteItem,
-} from "~~/shared/types/horario";
+  HorasDocenteItem
+} from '~~/shared/types/horario'
 
-const api = useHorarioApi();
+const api = useHorarioApi()
 
-const area = ref<number | undefined>(undefined);
-const turno = ref<number | undefined>(undefined);
-const sede = ref<number | undefined>(undefined);
-const grupo = ref<number | undefined>(undefined);
-const docente = ref<number | any | null>(null);
-const curso = ref<number | null>(null);
+const area = ref<number | undefined>(undefined)
+const turno = ref<number | undefined>(undefined)
+const sede = ref<number | undefined>(undefined)
+const grupo = ref<number | undefined>(undefined)
+const docente = ref<number | any | null>(null)
+const curso = ref<number | null>(null)
 
-const colorCurso = ref("");
-const diasMarcados = ref<string[]>([]);
-const cargandoInicial = ref(false);
-const cargandoGrupos = ref(false);
-const cargandoCargas = ref(false);
-const cargandoDisponibilidad = ref(false);
-const guardando = ref(false);
+const colorCurso = ref('')
+const diasMarcados = ref<string[]>([])
+const cargandoInicial = ref(false)
+const cargandoGrupos = ref(false)
+const cargandoCargas = ref(false)
+const cargandoDisponibilidad = ref(false)
+const guardando = ref(false)
 
-const areas = ref<Opcion[]>([]);
-const turnos = ref<Opcion[]>([]);
-const sedes = ref<Opcion[]>([]);
-const grupos = ref<any[]>([]);
-const docentes = ref<Array<{ id: number; text: string }>>([]);
-const teachersWithHours = ref<HorasDocenteItem[]>([]);
+const areas = ref<Opcion[]>([])
+const turnos = ref<Opcion[]>([])
+const sedes = ref<Opcion[]>([])
+const grupos = ref<any[]>([])
+const docentes = ref<Array<{ id: number, text: string }>>([])
+const teachersWithHours = ref<HorasDocenteItem[]>([])
 
 // 1. Áreas
 const areasOpciones = computed(() => {
-  return areas.value.map((item) => ({
+  return areas.value.map(item => ({
     label: item.denominacion,
-    value: item.id,
-  }));
-});
+    value: item.id
+  }))
+})
 
 // 2. Turnos
 const turnosOpciones = computed(() => {
-  return turnos.value.map((item) => ({
+  return turnos.value.map(item => ({
     label: item.denominacion,
-    value: item.id,
-  }));
-});
+    value: item.id
+  }))
+})
 
 // 3. Sedes
 const sedesOpciones = computed(() => {
-  return sedes.value.map((item) => ({
+  return sedes.value.map(item => ({
     label: item.denominacion,
-    value: item.id,
-  }));
-});
+    value: item.id
+  }))
+})
 
 // 4. Grupos (Mantenemos tu lógica de validación)
 const gruposOpciones = computed(() => {
-  if (!grupos.value) return [];
+  if (!grupos.value) return []
   return grupos.value.map((item: any) => ({
     label: item.grupo?.denominacion || item.grupo || `Grupo ${item.id}`,
-    value: item.id,
-  }));
-});
+    value: item.id
+  }))
+})
 
 // 5. Docentes (Directamente de la base, sin filtrar manualmente)
 const docentesOpciones = computed(() => {
-  if (!docentes.value) return [];
-  return docentes.value.map((item) => ({
+  if (!docentes.value) return []
+  return docentes.value.map(item => ({
     label: item.text,
-    value: item.id,
-  }));
-});
+    value: item.id
+  }))
+})
 
 type DisponibilidadObservaciones = {
   total: number
@@ -81,330 +81,329 @@ type DisponibilidadObservaciones = {
   otros: Record<string, number>
 }
 
-const cargas = ref<Carga[]>([]);
-const horariosGrupo = ref<any[]>([]);
-const turnoGrupo = ref("");
+const cargas = ref<Carga[]>([])
+const horariosGrupo = ref<any[]>([])
+const turnoGrupo = ref('')
 
-const disponibilidadHorario = ref<any[]>([]);
-const disponibilidad = ref<any[]>([]);
-const disponibilidadCursos = ref<any[]>([]);
+const disponibilidadHorario = ref<any[]>([])
+const disponibilidad = ref<any[]>([])
+const disponibilidadCursos = ref<any[]>([])
 const disponibilidadObservaciones = ref<DisponibilidadObservaciones | null>(null)
 
 const selectedTeacherTotalHours = computed(() => {
-  if (!docente.value || !teachersWithHours.value.length) return undefined;
-  const dVal =
-    typeof docente.value === "object" && docente.value !== null
+  if (!docente.value || !teachersWithHours.value.length) return undefined
+  const dVal
+    = typeof docente.value === 'object' && docente.value !== null
       ? (docente.value as any).value
-      : docente.value;
-  const found = teachersWithHours.value.find((t) => Number(t.docente_id) === Number(dVal));
-  return found?.total_horas;
-});
+      : docente.value
+  const found = teachersWithHours.value.find(t => Number(t.docente_id) === Number(dVal))
+  return found?.total_horas
+})
 
-const errors = ref<Record<string, string[]>>({});
-const mensaje = ref("");
-const mensajeTipo = ref<"success" | "error" | "info">("info");
+const errors = ref<Record<string, string[]>>({})
+const mensaje = ref('')
+const mensajeTipo = ref<'success' | 'error' | 'info'>('info')
 
 function mostrarMensaje(
   texto: string,
-  tipo: "success" | "error" | "info" = "info",
+  tipo: 'success' | 'error' | 'info' = 'info'
 ) {
-  mensaje.value = texto;
-  mensajeTipo.value = tipo;
+  mensaje.value = texto
+  mensajeTipo.value = tipo
 }
 
 function limpiarMensaje() {
-  mensaje.value = "";
+  mensaje.value = ''
 }
 
 function limpiarHorarioGrupo() {
-  curso.value = null;
-  colorCurso.value = "";
-  diasMarcados.value = [];
-  cargas.value = [];
-  horariosGrupo.value = [];
-  turnoGrupo.value = "";
+  curso.value = null
+  colorCurso.value = ''
+  diasMarcados.value = []
+  cargas.value = []
+  horariosGrupo.value = []
+  turnoGrupo.value = ''
 }
 
 function limpiarDisponibilidad() {
-  disponibilidadHorario.value = [];
-  disponibilidad.value = [];
-  disponibilidadCursos.value = [];
-  disponibilidadObservaciones.value = null;
+  disponibilidadHorario.value = []
+  disponibilidad.value = []
+  disponibilidadCursos.value = []
+  disponibilidadObservaciones.value = null
 }
 
 async function cargarInicial() {
-  cargandoInicial.value = true;
-  limpiarMensaje();
+  cargandoInicial.value = true
+  limpiarMensaje()
 
   try {
-    const [areasRes, turnosRes, sedesRes, docentesRes, teachersWithHoursRes] =
-      await Promise.all([
+    const [areasRes, turnosRes, sedesRes, docentesRes, teachersWithHoursRes]
+      = await Promise.all([
         api.getAreas(),
         api.getTurnos(),
         api.getSedes(),
         api.getDocentes(),
-        api.listarHorasDocentes(),
-      ]);
+        api.listarHorasDocentes()
+      ])
 
-    areas.value = areasRes;
-    turnos.value = turnosRes;
-    sedes.value = sedesRes;
-    docentes.value = docentesRes;
-    teachersWithHours.value = teachersWithHoursRes || [];
+    areas.value = areasRes
+    turnos.value = turnosRes
+    sedes.value = sedesRes
+    docentes.value = docentesRes
+    teachersWithHours.value = teachersWithHoursRes || []
   } catch (error: any) {
     mostrarMensaje(
-      error?.data?.message || "No se pudo cargar la información inicial",
-      "error",
-    );
+      error?.data?.message || 'No se pudo cargar la información inicial',
+      'error'
+    )
   } finally {
-    cargandoInicial.value = false;
+    cargandoInicial.value = false
   }
 }
 
 async function cargarGrupos() {
-  cargandoGrupos.value = true;
-  grupo.value = undefined;
-  limpiarHorarioGrupo();
+  cargandoGrupos.value = true
+  grupo.value = undefined
+  limpiarHorarioGrupo()
 
   try {
     const getVal = (v: any) =>
-      typeof v === "object" && v !== null ? v.value : v;
+      typeof v === 'object' && v !== null ? v.value : v
     grupos.value = await api.getGrupoAulas({
       area: getVal(area.value),
       turno: getVal(turno.value),
-      sede: getVal(sede.value),
-    });
+      sede: getVal(sede.value)
+    })
   } catch (error: any) {
-    grupos.value = [];
+    grupos.value = []
     mostrarMensaje(
-      error?.data?.message || "No se pudieron cargar los grupos",
-      "error",
-    );
+      error?.data?.message || 'No se pudieron cargar los grupos',
+      'error'
+    )
   } finally {
-    cargandoGrupos.value = false;
+    cargandoGrupos.value = false
   }
 }
 
 async function changeGrupo() {
-  limpiarHorarioGrupo();
-  errors.value = {};
+  limpiarHorarioGrupo()
+  errors.value = {}
 
-  if (!grupo.value) return;
+  if (!grupo.value) return
 
-  cargandoCargas.value = true;
+  cargandoCargas.value = true
 
   try {
-    const groupId =
-      typeof grupo.value === "object" && grupo.value !== null
+    const groupId
+      = typeof grupo.value === 'object' && grupo.value !== null
         ? (grupo.value as any).value
-        : grupo.value;
-    const response: CargaAcademicaResponse =
-      await api.getCargaAcademica(groupId);
-    cargas.value = response.cargaAcademica || [];
-    horariosGrupo.value = response.horario || [];
-    turnoGrupo.value = response.turno?.denominacion || "";
+        : grupo.value
+    const response: CargaAcademicaResponse
+      = await api.getCargaAcademica(groupId)
+    cargas.value = response.cargaAcademica || []
+    horariosGrupo.value = response.horario || []
+    turnoGrupo.value = response.turno?.denominacion || ''
   } catch (error: any) {
     mostrarMensaje(
-      error?.data?.message || "No se pudo cargar la carga académica",
-      "error",
-    );
+      error?.data?.message || 'No se pudo cargar la carga académica',
+      'error'
+    )
   } finally {
-    cargandoCargas.value = false;
+    cargandoCargas.value = false
   }
 }
 
 async function changeDocente() {
-  limpiarDisponibilidad();
+  limpiarDisponibilidad()
 
-  if (!docente.value) return;
+  if (!docente.value) return
 
-  cargandoDisponibilidad.value = true;
+  cargandoDisponibilidad.value = true
 
   try {
-    const dVal =
-      typeof docente.value === "object" && docente.value !== null
+    const dVal
+      = typeof docente.value === 'object' && docente.value !== null
         ? (docente.value as any).value
-        : docente.value;
-    const tVal =
-      typeof turno.value === "object" && turno.value !== null
+        : docente.value
+    const tVal
+      = typeof turno.value === 'object' && turno.value !== null
         ? (turno.value as any).value
-        : turno.value;
+        : turno.value
 
-    if (!dVal) return;
+    if (!dVal) return
 
     const response: DisponibilidadResponse = await api.getDisponibilidad({
       docente: dVal,
-      turno: tVal,
-    });
+      turno: tVal
+    })
 
-    disponibilidadHorario.value = response.horario || [];
-    disponibilidad.value = response.disponibilidad || [];
-    disponibilidadCursos.value = response.cursos || [];
-    disponibilidadObservaciones.value = response.estado_observaciones || null;
+    disponibilidadHorario.value = response.horario || []
+    disponibilidad.value = response.disponibilidad || []
+    disponibilidadCursos.value = response.cursos || []
+    disponibilidadObservaciones.value = response.estado_observaciones || null
   } catch (error: any) {
     mostrarMensaje(
-      error?.data?.message || "No se pudo cargar la disponibilidad del docente",
-      "error",
-    );
+      error?.data?.message || 'No se pudo cargar la disponibilidad del docente',
+      'error'
+    )
   } finally {
-    cargandoDisponibilidad.value = false;
+    cargandoDisponibilidad.value = false
   }
 }
 
 function seleccionarCurso(carga: Carga) {
-  curso.value = carga.id;
-  colorCurso.value = carga.curso?.color || "";
-  diasMarcados.value = [];
+  curso.value = carga.id
+  colorCurso.value = carga.curso?.color || ''
+  diasMarcados.value = []
 }
 
 async function guardarHorario() {
-  errors.value = {};
-  limpiarMensaje();
+  errors.value = {}
+  limpiarMensaje()
 
   if (
-    !grupo.value ||
-    !docente.value ||
-    !curso.value ||
-    !diasMarcados.value.length
+    !grupo.value
+    || !docente.value
+    || !curso.value
+    || !diasMarcados.value.length
   ) {
     mostrarMensaje(
-      "Selecciona grupo, docente, curso y al menos un horario.",
-      "error",
-    );
-    return;
+      'Selecciona grupo, docente, curso y al menos un horario.',
+      'error'
+    )
+    return
   }
 
-  guardando.value = true;
+  guardando.value = true
 
   try {
     const getVal = (v: any) =>
-      typeof v === "object" && v !== null ? v.value : v;
+      typeof v === 'object' && v !== null ? v.value : v
     const response = await api.guardarHorario({
       grupo_aula: getVal(grupo.value),
       docente: getVal(docente.value),
       carga: getVal(curso.value),
-      horario: diasMarcados.value,
-    });
+      horario: diasMarcados.value
+    })
 
     if (response.status) {
       mostrarMensaje(
-        response.message || "Horario guardado correctamente.",
-        "success",
-      );
-      await changeGrupo();
-      await changeDocente();
-      curso.value = null;
-      colorCurso.value = "";
-      diasMarcados.value = [];
+        response.message || 'Horario guardado correctamente.',
+        'success'
+      )
+      await changeGrupo()
+      await changeDocente()
+      curso.value = null
+      colorCurso.value = ''
+      diasMarcados.value = []
     } else {
       mostrarMensaje(
-        response.message || "No se pudo guardar el horario.",
-        "error",
-      );
+        response.message || 'No se pudo guardar el horario.',
+        'error'
+      )
     }
   } catch (error: any) {
     if (error?.data?.errors) {
-      errors.value = error.data.errors;
+      errors.value = error.data.errors
     }
     mostrarMensaje(
-      error?.data?.message || "No se pudo guardar el horario.",
-      "error",
-    );
+      error?.data?.message || 'No se pudo guardar el horario.',
+      'error'
+    )
   } finally {
-    guardando.value = false;
+    guardando.value = false
   }
 }
 
 async function quitarDocente(cargaId: number, docenteId: number) {
   const ok = window.confirm(
-    "¿Está seguro de desmatricular el docente del curso?",
-  );
-  if (!ok) return;
+    '¿Está seguro de desmatricular el docente del curso?'
+  )
+  if (!ok) return
 
   try {
     const response = await api.desmatricularDocente({
       docente: docenteId,
-      carga: cargaId,
-    });
+      carga: cargaId
+    })
 
     if (response.status) {
       mostrarMensaje(
-        response.message || "Docente desmatriculado correctamente.",
-        "success",
-      );
-      await changeGrupo();
-      await changeDocente();
-      curso.value = null;
-      colorCurso.value = "";
-      diasMarcados.value = [];
+        response.message || 'Docente desmatriculado correctamente.',
+        'success'
+      )
+      await changeGrupo()
+      await changeDocente()
+      curso.value = null
+      colorCurso.value = ''
+      diasMarcados.value = []
     } else {
       mostrarMensaje(
-        response.message || "No se pudo desmatricular al docente.",
-        "error",
-      );
+        response.message || 'No se pudo desmatricular al docente.',
+        'error'
+      )
     }
   } catch (error: any) {
     mostrarMensaje(
-      error?.data?.message || "No se pudo desmatricular al docente.",
-      "error",
-    );
+      error?.data?.message || 'No se pudo desmatricular al docente.',
+      'error'
+    )
   }
 }
 
 async function sincronizarClassroom(cargaId: number, docenteId: number) {
-  const ok = window.confirm("¿Está seguro de vincular al ClassRoom?");
-  if (!ok) return;
+  const ok = window.confirm('¿Está seguro de vincular al ClassRoom?')
+  if (!ok) return
 
   try {
     const response = await api.vincularDocente({
       docente: docenteId,
-      carga: cargaId,
-    });
+      carga: cargaId
+    })
 
     if (response.status) {
       mostrarMensaje(
-        response.message || "Vinculación realizada correctamente.",
-        "success",
-      );
+        response.message || 'Vinculación realizada correctamente.',
+        'success'
+      )
     } else {
       mostrarMensaje(
-        response.message || "No se pudo vincular al ClassRoom.",
-        "error",
-      );
+        response.message || 'No se pudo vincular al ClassRoom.',
+        'error'
+      )
     }
   } catch (error: any) {
     mostrarMensaje(
-      error?.data?.message || "No se pudo vincular al ClassRoom.",
-      "error",
-    );
+      error?.data?.message || 'No se pudo vincular al ClassRoom.',
+      'error'
+    )
   }
 }
 
 watch([area, turno, sede], async () => {
-  await cargarGrupos();
-});
+  await cargarGrupos()
+})
 
 watch(grupo, async () => {
-  await changeGrupo();
-});
+  await changeGrupo()
+})
 
 watch([docente, turno], async () => {
   if (docente.value) {
-    await changeDocente();
+    await changeDocente()
   } else {
-    limpiarDisponibilidad();
+    limpiarDisponibilidad()
   }
-});
+})
 
 onMounted(async () => {
-  await cargarInicial();
-  await cargarGrupos();
-});
+  await cargarInicial()
+  await cargarGrupos()
+})
 
 const emit = defineEmits<{
-  (e: "refresh"): void
+  (e: 'refresh'): void
 }>()
-
 </script>
 
 <template>
@@ -412,8 +411,14 @@ const emit = defineEmits<{
     <UCard>
       <template #header>
         <div class="flex items-center justify-between gap-4">
-          <h1 class="text-xl font-bold">Gestión de Horario</h1>
-          <UBadge v-if="cargandoInicial" color="primary" variant="soft">
+          <h1 class="text-xl font-bold">
+            Gestión de Horario
+          </h1>
+          <UBadge
+            v-if="cargandoInicial"
+            color="primary"
+            variant="soft"
+          >
             Cargando...
           </UBadge>
         </div>
@@ -454,7 +459,10 @@ const emit = defineEmits<{
       </div>
 
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <UFormField label="Área" icon="i-lucide-layers">
+        <UFormField
+          label="Área"
+          icon="i-lucide-layers"
+        >
           <USelect
             v-model="area"
             :items="areasOpciones"
@@ -468,7 +476,10 @@ const emit = defineEmits<{
           />
         </UFormField>
 
-        <UFormField label="Turno" icon="i-lucide-clock">
+        <UFormField
+          label="Turno"
+          icon="i-lucide-clock"
+        >
           <USelect
             v-model="turno"
             :items="turnosOpciones"
@@ -482,7 +493,10 @@ const emit = defineEmits<{
           />
         </UFormField>
 
-        <UFormField label="Sede" icon="i-lucide-map-pin">
+        <UFormField
+          label="Sede"
+          icon="i-lucide-map-pin"
+        >
           <USelect
             v-model="sede"
             :items="sedesOpciones"
@@ -496,7 +510,10 @@ const emit = defineEmits<{
           />
         </UFormField>
 
-        <UFormField label="Grupo / Aula" icon="i-lucide-users">
+        <UFormField
+          label="Grupo / Aula"
+          icon="i-lucide-users"
+        >
           <USelect
             v-model="grupo"
             :items="gruposOpciones"
@@ -540,11 +557,13 @@ const emit = defineEmits<{
       </div>
     </UCard>
 
-    <div class="grid gap-6 xl:grid-cols-2" >
+    <div class="grid gap-6 xl:grid-cols-2">
       <UCard>
         <template #header>
           <div class="flex items-center justify-between gap-3">
-            <h2 class="text-lg font-semibold">Horario</h2>
+            <h2 class="text-lg font-semibold">
+              Horario
+            </h2>
             <UBadge
               v-if="cargandoCargas || cargandoGrupos"
               color="primary"
@@ -560,24 +579,41 @@ const emit = defineEmits<{
             <table class="min-w-full border-collapse text-sm">
               <thead>
                 <tr class="bg-blue-100 dark:bg-blue-900/30">
-                  <th class="border px-3 py-2">Curso</th>
-                  <th class="border px-3 py-2">Marcar</th>
-                  <th class="border px-3 py-2">Docente</th>
-                  <th class="border px-3 py-2">Acción</th>
-                  <th class="border px-3 py-2">Tipo</th>
-                  <th class="border px-3 py-2">Estado</th>
-                  <th class="border px-3 py-2">ClassRoom</th>
+                  <th class="border px-3 py-2">
+                    Curso
+                  </th>
+                  <th class="border px-3 py-2">
+                    Marcar
+                  </th>
+                  <th class="border px-3 py-2">
+                    Docente
+                  </th>
+                  <th class="border px-3 py-2">
+                    Acción
+                  </th>
+                  <th class="border px-3 py-2">
+                    Tipo
+                  </th>
+                  <th class="border px-3 py-2">
+                    Estado
+                  </th>
+                  <th class="border px-3 py-2">
+                    ClassRoom
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="carga in cargas" :key="carga.id">
+                <tr
+                  v-for="carga in cargas"
+                  :key="carga.id"
+                >
                   <td
                     class="border px-3 py-2"
                     :style="{
                       background:
                         String(carga.tipo) === '1'
                           ? carga.curso?.color || ''
-                          : '',
+                          : ''
                     }"
                   >
                     {{ carga.curso?.denominacion }}
@@ -590,7 +626,7 @@ const emit = defineEmits<{
                       type="radio"
                       name="curso"
                       @change="seleccionarCurso(carga)"
-                    />
+                    >
                   </td>
 
                   <td class="border px-3 py-2">
@@ -649,7 +685,10 @@ const emit = defineEmits<{
             </table>
           </div>
 
-          <p v-if="errors.carga" class="text-sm text-red-500">
+          <p
+            v-if="errors.carga"
+            class="text-sm text-red-500"
+          >
             {{ errors.carga[0] }}
           </p>
 
@@ -662,7 +701,10 @@ const emit = defineEmits<{
             @update:model-value="diasMarcados = $event"
           />
 
-          <p v-if="errors.horario" class="text-sm text-red-500">
+          <p
+            v-if="errors.horario"
+            class="text-sm text-red-500"
+          >
             {{ errors.horario[0] }}
           </p>
 
@@ -678,7 +720,7 @@ const emit = defineEmits<{
         </div>
       </UCard>
 
-      <div class="space-y-6" >
+      <div class="space-y-6">
         <HorarioDocenteDisponibilidad
           :horarios="disponibilidadHorario"
           titulo="Horario Docentes"
@@ -690,7 +732,9 @@ const emit = defineEmits<{
         <UCard>
           <template #header>
             <div class="flex items-center justify-between gap-3">
-              <h3 class="text-lg font-semibold">Cursos por área</h3>
+              <h3 class="text-lg font-semibold">
+                Cursos por área
+              </h3>
               <UBadge
                 v-if="cargandoDisponibilidad"
                 color="primary"
@@ -725,7 +769,9 @@ const emit = defineEmits<{
 
         <UCard>
           <template #header>
-            <h3 class="text-lg font-semibold">Disponibilidad</h3>
+            <h3 class="text-lg font-semibold">
+              Disponibilidad
+            </h3>
           </template>
 
           <DisponibilidadDocenteGrid :disponibilidad="disponibilidad" />
@@ -750,7 +796,7 @@ const emit = defineEmits<{
           <div class="flex justify-center mb-4">
             <div
               class="h-14 w-14 rounded-full border-4 border-primary-200 border-t-primary animate-spin"
-            ></div>
+            />
           </div>
 
           <h3 class="text-lg font-bold text-gray-900 dark:text-white">
@@ -763,7 +809,7 @@ const emit = defineEmits<{
 
           <div class="mt-5 space-y-2">
             <div class="h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-              <div class="h-full w-1/2 rounded-full bg-primary animate-pulse"></div>
+              <div class="h-full w-1/2 rounded-full bg-primary animate-pulse" />
             </div>
             <div class="text-xs text-gray-400 dark:text-gray-500">
               Esto puede tardar unos segundos
@@ -772,6 +818,5 @@ const emit = defineEmits<{
         </div>
       </div>
     </Transition>
-
   </div>
 </template>

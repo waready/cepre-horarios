@@ -1,49 +1,49 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed } from 'vue'
 
 const emit = defineEmits<{
-  (e: "refresh"): void
+  (e: 'refresh'): void
 }>()
 
 type Curso = {
-  id?: number;
-  denominacion?: string;
-  color?: string;
-};
+  id?: number
+  denominacion?: string
+  color?: string
+}
 
 type Docente = {
-  id?: number;
-  nombres?: string;
-  paterno?: string;
-  materno?: string;
-};
+  id?: number
+  nombres?: string
+  paterno?: string
+  materno?: string
+}
 
 type Carga = {
-  id?: number;
-  docente?: Docente | null;
-};
+  id?: number
+  docente?: Docente | null
+}
 
 type withDefaultsorarioItem = {
-  id: number;
-  dia: string | number;
-  grupo?: string;
-  sede?: string;
-  curso?: Curso | null;
-  carga?: Carga | null;
-};
+  id: number
+  dia: string | number
+  grupo?: string
+  sede?: string
+  curso?: Curso | null
+  carga?: Carga | null
+}
 
 type withDefaultsorarioBloque = {
-  id?: number;
-  hora_inicio: string;
-  hora_fin: string;
-  horario: HorarioItem[];
-};
+  id?: number
+  hora_inicio: string
+  hora_fin: string
+  horario: HorarioItem[]
+}
 
 type HorarioTurno = {
-  id: number;
-  turno: string;
-  disponibilidad: HorarioBloque[];
-};
+  id: number
+  turno: string
+  disponibilidad: HorarioBloque[]
+}
 
 // const props = withDefaults(
 //   defineProps<{
@@ -58,140 +58,140 @@ type HorarioTurno = {
 // );
 
 const dias = [
-  { id: 1, label: "Lunes" },
-  { id: 2, label: "Martes" },
-  { id: 3, label: "Miércoles" },
-  { id: 4, label: "Jueves" },
-  { id: 5, label: "Viernes" },
-];
+  { id: 1, label: 'Lunes' },
+  { id: 2, label: 'Martes' },
+  { id: 3, label: 'Miércoles' },
+  { id: 4, label: 'Jueves' },
+  { id: 5, label: 'Viernes' }
+]
 
 type EstadoObservaciones = {
-  total?: number;
-  pendiente?: number;
-  atendido?: number;
-  cerrado?: number;
-  otros?: Record<string, number>;
-};
+  total?: number
+  pendiente?: number
+  atendido?: number
+  cerrado?: number
+  otros?: Record<string, number>
+}
 
 const props = withDefaults(
   defineProps<{
-    horarios: HorarioTurno[];
-    titulo?: string;
-    totalHorasFicha?: string;
-    estadoObservaciones?: EstadoObservaciones | null;
+    horarios: HorarioTurno[]
+    titulo?: string
+    totalHorasFicha?: string
+    estadoObservaciones?: EstadoObservaciones | null
   }>(),
   {
-    titulo: "Horario Docente",
-  },
-);
+    titulo: 'Horario Docente'
+  }
+)
 
 const otrosEstados = computed(() => {
   return Object.entries(props.estadoObservaciones?.otros ?? {}).filter(
-    ([, cantidad]) => Number(cantidad) > 0,
-  );
-});
+    ([, cantidad]) => Number(cantidad) > 0
+  )
+})
 
 function formatEstadoLabel(key: string) {
   return key
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase())
 }
 
 function normalizarDia(value: string | number | undefined) {
-  return Number(value ?? 0);
+  return Number(value ?? 0)
 }
 
 function itemsPorDia(items: HorarioItem[], dia: number) {
-  return items.filter((item) => normalizarDia(item.dia) === dia);
+  return items.filter(item => normalizarDia(item.dia) === dia)
 }
 
 function minutosEntre(horaInicio: string, horaFin: string) {
-  const [h1, m1] = horaInicio.split(":").map(Number);
-  const [h2, m2] = horaFin.split(":").map(Number);
+  const [h1, m1] = horaInicio.split(':').map(Number)
+  const [h2, m2] = horaFin.split(':').map(Number)
 
-  return (h2 || 0) * 60 + (m2 || 0) - ((h1 || 0) * 60 + (m1 || 0));
+  return (h2 || 0) * 60 + (m2 || 0) - ((h1 || 0) * 60 + (m1 || 0))
 }
 
 const cursosDelHorario = computed(() => {
   const map = new Map<
     string,
-    { id: number | null; denominacion: string; color?: string }
-  >();
+    { id: number | null, denominacion: string, color?: string }
+  >()
 
   for (const turno of props.horarios || []) {
     for (const bloque of turno.disponibilidad || []) {
       for (const item of bloque.horario || []) {
-        const curso = item.curso;
-        if (!curso?.denominacion) continue;
+        const curso = item.curso
+        if (!curso?.denominacion) continue
 
-        const key = String(curso.id ?? curso.denominacion);
+        const key = String(curso.id ?? curso.denominacion)
 
         if (!map.has(key)) {
           map.set(key, {
             id: curso.id ?? null,
             denominacion: curso.denominacion,
-            color: curso.color,
-          });
+            color: curso.color
+          })
         }
       }
     }
   }
 
-  return Array.from(map.values());
-});
+  return Array.from(map.values())
+})
 
 const totalMinutos = computed(() => {
-  const usados = new Set<string>();
-  let total = 0;
+  const usados = new Set<string>()
+  let total = 0
 
   for (const turno of props.horarios || []) {
     for (const bloque of turno.disponibilidad || []) {
       for (const item of bloque.horario || []) {
-        const key = String(item.id);
-        if (usados.has(key)) continue;
+        const key = String(item.id)
+        if (usados.has(key)) continue
 
-        usados.add(key);
-        total += minutosEntre(bloque.hora_inicio, bloque.hora_fin);
+        usados.add(key)
+        total += minutosEntre(bloque.hora_inicio, bloque.hora_fin)
       }
     }
   }
 
-  return total;
-});
+  return total
+})
 
 const totalHorasDocente = computed(() => {
-  if (props.totalHorasFicha) return `${props.totalHorasFicha} h`;
-});
+  if (props.totalHorasFicha) return `${props.totalHorasFicha} h`
+})
 
 const columnasTurno = computed(() => {
   return [
-    { accessorKey: "bloque", header: "Bloque" },
-    ...dias.map((dia) => ({
+    { accessorKey: 'bloque', header: 'Bloque' },
+    ...dias.map(dia => ({
       accessorKey: `dia_${dia.id}`,
-      header: dia.label,
-    })),
-  ];
-});
+      header: dia.label
+    }))
+  ]
+})
 
-const isOpen = ref(false);
-const selectedItem = ref<HorarioItem | null>(null);
-const selectedBloque = ref<HorarioBloque | null>(null);
-const selectedTurno = ref<HorarioTurno | null>(null);
+const isOpen = ref(false)
+const selectedItem = ref<HorarioItem | null>(null)
+const selectedBloque = ref<HorarioBloque | null>(null)
+const selectedTurno = ref<HorarioTurno | null>(null)
 
 function openModal(
   item: HorarioItem,
   bloque: HorarioBloque,
-  turno: HorarioTurno,
+  turno: HorarioTurno
 ) {
-  selectedItem.value = item;
-  selectedBloque.value = bloque;
-  selectedTurno.value = turno;
-  isOpen.value = true;
+  selectedItem.value = item
+  selectedBloque.value = bloque
+  selectedTurno.value = turno
+  isOpen.value = true
 }
 
 function onSaved() {
   isOpen.value = false
-  emit("refresh")
+  emit('refresh')
 }
 </script>
 
@@ -199,7 +199,7 @@ function onSaved() {
   <UCard
     :ui="{
       ring: 'ring-1 ring-gray-200 dark:ring-gray-800',
-      shadow: 'shadow-md shadow-gray-200/50 dark:shadow-black/20',
+      shadow: 'shadow-md shadow-gray-200/50 dark:shadow-black/20'
     }"
     class="overflow-hidden rounded-2xl bg-white dark:bg-gray-900 transition-all"
   >
@@ -211,7 +211,10 @@ function onSaved() {
         >
           <div class="flex items-center gap-3">
             <div class="p-2.5 bg-primary/10 rounded-xl text-primary">
-              <UIcon name="i-lucide-calendar-days" class="w-6 h-6" />
+              <UIcon
+                name="i-lucide-calendar-days"
+                class="w-6 h-6"
+              />
             </div>
             <h3
               class="text-2xl tracking-tight font-black text-gray-900 dark:text-white"
@@ -233,7 +236,6 @@ function onSaved() {
               class="w-4 h-4 mr-1.5"
             />
             <span class="font-bold">{{ totalHorasDocente }}</span>
-          
           </UBadge>
         </div>
 
@@ -245,11 +247,17 @@ function onSaved() {
             <div
               class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2"
             >
-              <UIcon name="i-lucide-book-open" class="w-4 h-4" /> Cursos
+              <UIcon
+                name="i-lucide-book-open"
+                class="w-4 h-4"
+              /> Cursos
               Asignados
             </div>
 
-            <div v-if="cursosDelHorario.length" class="flex flex-wrap gap-2">
+            <div
+              v-if="cursosDelHorario.length"
+              class="flex flex-wrap gap-2"
+            >
               <div
                 v-for="curso in cursosDelHorario"
                 :key="curso.id ?? curso.denominacion"
@@ -261,12 +269,11 @@ function onSaved() {
                 >
                   <div
                     class="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent"
-                  ></div>
+                  />
                 </div>
                 <span
                   class="text-gray-700 dark:text-gray-200 text-xs tracking-wide"
-                  >{{ curso.denominacion }}</span
-                >
+                >{{ curso.denominacion }}</span>
               </div>
             </div>
 
@@ -274,7 +281,10 @@ function onSaved() {
               v-else
               class="text-sm text-gray-400 italic flex items-center gap-2"
             >
-              <UIcon name="i-lucide-info" class="w-4 h-4" />
+              <UIcon
+                name="i-lucide-info"
+                class="w-4 h-4"
+              />
               Sin cursos asignados
             </div>
           </div>
@@ -299,7 +309,10 @@ function onSaved() {
             >
               {{ props.estadoObservaciones?.total ?? 0 }}
             </span>
-            <div v-if="otrosEstados.length" class="z-10 w-full mt-4">
+            <div
+              v-if="otrosEstados.length"
+              class="z-10 w-full mt-4"
+            >
               <div class="flex flex-wrap gap-2">
                 <UBadge
                   v-for="[key, cantidad] in otrosEstados"
@@ -332,9 +345,13 @@ function onSaved() {
       v-else
       class="space-y-10 border-t border-gray-100 dark:border-gray-800 p-2 md:p-6 bg-gray-50/30 dark:bg-gray-950/30"
     >
-      <section v-for="turno in horarios" :key="turno.id" class="space-y-4">
+      <section
+        v-for="turno in horarios"
+        :key="turno.id"
+        class="space-y-4"
+      >
         <div class="flex items-center gap-3 ml-2">
-          <div class="h-6 w-1.5 rounded-full bg-emerald-500"></div>
+          <div class="h-6 w-1.5 rounded-full bg-emerald-500" />
           <h4
             class="text-lg font-bold text-gray-800 dark:text-gray-100 tracking-tight"
           >
@@ -354,15 +371,15 @@ function onSaved() {
                 wrapper: 'relative',
                 th: {
                   base: 'border-b border-r border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 text-center text-gray-500 dark:text-gray-400 font-semibold uppercase text-xs h-12',
-                  padding: 'px-2',
+                  padding: 'px-2'
                 },
                 td: {
                   base: 'border-b border-r border-gray-100 dark:border-gray-800/60 align-top transition-colors relative',
-                  padding: 'p-1',
+                  padding: 'p-1'
                 },
                 tr: {
-                  base: 'hover:bg-gray-50/30 dark:hover:bg-gray-800/10 group',
-                },
+                  base: 'hover:bg-gray-50/30 dark:hover:bg-gray-800/10 group'
+                }
               } as any
             "
           >
@@ -373,8 +390,7 @@ function onSaved() {
               >
                 <span
                   class="text-[11px] font-bold text-gray-700 dark:text-gray-300"
-                  >{{ row.original.hora_inicio }}</span
-                >
+                >{{ row.original.hora_inicio }}</span>
                 <span class="text-[10px] font-medium text-gray-400">{{
                   row.original.hora_fin
                 }}</span>
@@ -399,14 +415,14 @@ function onSaved() {
                     class="rounded p-2 shadow-sm hover:shadow-md transition-all flex flex-col h-full border-l-4 relative overflow-hidden cursor-pointer"
                     :style="{
                       backgroundColor: (item.curso?.color || '#3b82f6') + '25',
-                      borderColor: item.curso?.color || '#3b82f6',
+                      borderColor: item.curso?.color || '#3b82f6'
                     }"
                     @click="openModal(item, row.original, turno)"
                   >
                     <!-- Capa sutil de color para oscurecer/aclarar si es necesario -->
                     <div
                       class="absolute inset-0 bg-white/10 dark:bg-black/10 pointer-events-none"
-                    ></div>
+                    />
 
                     <div
                       class="font-bold text-[12px] leading-tight mb-1 relative z-10 truncate drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)] dark:drop-shadow-[0_1px_1px_rgba(0,0,0,1)]"
@@ -414,10 +430,9 @@ function onSaved() {
                     >
                       <span
                         class="filter brightness-75 dark:brightness-150 saturate-150"
-                        >{{
-                          item.curso?.denominacion || "Curso sin nombre"
-                        }}</span
-                      >
+                      >{{
+                        item.curso?.denominacion || "Curso sin nombre"
+                      }}</span>
                     </div>
 
                     <div
@@ -426,14 +441,18 @@ function onSaved() {
                     >
                       <span
                         class="flex items-center gap-1 filter brightness-50 dark:brightness-150"
-                        ><UIcon name="i-lucide-map-pin" class="w-3 h-3" />
-                        {{ item.sede || "SEDE" }}</span
-                      >
+                      ><UIcon
+                         name="i-lucide-map-pin"
+                         class="w-3 h-3"
+                       />
+                        {{ item.sede || "SEDE" }}</span>
                       <span
                         class="flex items-center gap-1 filter brightness-50 dark:brightness-150"
-                        ><UIcon name="i-lucide-users" class="w-3 h-3" />
-                        {{ item.grupo || "GRUPO" }}</span
-                      >
+                      ><UIcon
+                         name="i-lucide-users"
+                         class="w-3 h-3"
+                       />
+                        {{ item.grupo || "GRUPO" }}</span>
                     </div>
                   </div>
                 </template>

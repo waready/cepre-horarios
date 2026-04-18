@@ -58,7 +58,9 @@ function textoSede(items: DisponibilidadItem[], dia: number) {
         <table class="min-w-full border-collapse text-sm">
           <thead>
             <tr class="bg-cyan-100 dark:bg-cyan-900/30">
-              <th class="border px-3 py-2 text-left min-w-[120px]">Hora</th>
+              <th class="border px-3 py-2 text-left min-w-[120px]">
+                Hora
+              </th>
               <th
                 v-for="dia in dias"
                 :key="dia.id"

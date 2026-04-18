@@ -1,54 +1,54 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from "@nuxt/ui";
+import type { NavigationMenuItem } from '@nuxt/ui'
 
-const open = ref(false);
+const open = ref(false)
 
 const items: NavigationMenuItem[][] = [
   [
     {
-      label: "Dashboard Home",
-      to: "/dashboard",
-      icon: "i-lucide-house",
+      label: 'Dashboard Home',
+      to: '/dashboard',
+      icon: 'i-lucide-house',
       onSelect: () => {
-        open.value = false;
+        open.value = false
       },
-      exact: true,
+      exact: true
     },
     {
-      label: "Horario",
-      to: "/dashboard/horario",
-      icon: "i-lucide-calendar",
+      label: 'Horario',
+      to: '/dashboard/horario',
+      icon: 'i-lucide-calendar',
       onSelect: () => {
-        open.value = false;
+        open.value = false
       },
       exact: true,
-      type: "trigger",
+      type: 'trigger',
       children: [
         {
-          label: "Horario",
-          to: "/dashboard/horario",
+          label: 'Horario',
+          to: '/dashboard/horario',
           exact: true,
           onSelect: () => {
-            open.value = false;
-          },
+            open.value = false
+          }
         },
         {
-          label: "Docentes observados",
-          to: "/dashboard/horario/observaciones",
+          label: 'Docentes observados',
+          to: '/dashboard/horario/observaciones',
           onSelect: () => {
-            open.value = false;
-          },
+            open.value = false
+          }
         },
         {
-          label: "Horas docentes",
-          to: "/dashboard/horario/horas-docentes",
+          label: 'Horas docentes',
+          to: '/dashboard/horario/horas-docentes',
           onSelect: () => {
-            open.value = false;
-          },
-        },
-      ],
-    },
-    
+            open.value = false
+          }
+        }
+      ]
+    }
+
     // {
     //   label: "Settings",
     //   to: "/dashboard/settings",
@@ -80,18 +80,19 @@ const items: NavigationMenuItem[][] = [
     //     },
     //   ],
     // },
-  ],
-];
+  ]
+]
 </script>
+
 <template>
   <UDashboardGroup>
     <UDashboardSidebar
+      id="default"
+      v-model:open="open"
       collapsible
       resizable
       :ui="{ footer: 'border-t border-default' }"
       class="bg-elevated/25"
-      v-model:open="open"
-      id="default"
     >
       <template #default="{ collapsed }">
         <UNavigationMenu
@@ -111,4 +112,5 @@ const items: NavigationMenuItem[][] = [
     <slot />
   </UDashboardGroup>
 </template>
+
 <style lang="scss" scoped></style>
