@@ -125,4 +125,5 @@ export type HorasDocenteItem = {
   total_minutos: number
   total_horas: string
   cursos_dictados: string
+  grupos?: string
 }

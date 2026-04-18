@@ -137,48 +137,10 @@ const columns: TableColumn<DocenteTransformed>[] = [
     }
   },
   {
-    accessorKey: 'cursos_dictados',
-    header: 'Cursos Asignados',
-    cell: ({ row }) => {
-      const cursosStr = row.original.cursos_dictados
-      if (!cursosStr)
-        return h(
-          'span',
-          { class: 'text-xs text-gray-400 italic' },
-          'Sin cursos'
-        )
-
-      const cursos = cursosStr.split(',').map(c => c.trim())
-
-      return h(
-        'div',
-        { class: 'flex flex-wrap gap-1 max-w-[300px]' },
-        cursos.map((c) => {
-          return h(
-            UBadge,
-            {
-              variant: 'soft',
-              color: 'neutral',
-              size: 'sm',
-              class: 'text-[10px] font-bold border whitespace-nowrap'
-            },
-            () => c
-          )
-        })
-      )
-    }
-  },
-  {
-    accessorKey: 'cursos_dictados',
+    accessorKey: 'grupos',
     header: 'Grupos Asignados',
-    // cell: ({ row }) =>
-    //   h(
-    //     "span",
-    //     { class: "text-gray-600 dark:text-gray-400" },
-    //     row.getValue("grupos"),
-    //   ),
     cell: ({ row }) => {
-      const cursosStr = row.original.cursos_dictados
+      const cursosStr = row.original.grupos
       if (!cursosStr)
         return h(
           'span',
@@ -186,12 +148,12 @@ const columns: TableColumn<DocenteTransformed>[] = [
           'Sin grupos'
         )
 
-      const cursos = cursosStr.split(',').map(c => c.trim())
+      const cursos = cursosStr.split(',').map((c: string) => c.trim())
 
       return h(
         'div',
         { class: 'flex flex-wrap gap-1 max-w-[300px]' },
-        cursos.map((c) => {
+        cursos.map((c: string) => {
           return h(
             UBadge,
             {
