@@ -5,6 +5,7 @@ type LoginResponse = {
   message?: string
   user?: { email: string }
   token?: string
+  data?: { token?: string }
 }
 
 export default defineEventHandler(async (event) => {
@@ -50,16 +51,12 @@ export default defineEventHandler(async (event) => {
       message: response.message || 'Login exitoso',
       user: response.user || { email }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('[login.post] error:', error)
 
     throw createError({
-      statusCode: (error as any)?.response?.status || (error as any)?.statusCode || 401,
-      statusMessage:
-        error?.data?.message
-        || error?.response?._data?.message
-        || error?.statusMessage
-        || 'Credenciales incorrectas'
+      statusCode: error?.response?.status || error?.statusCode || 401,
+      statusMessage: error?.response?.data?.message || error?.message || 'Error en login'
     })
   }
 })

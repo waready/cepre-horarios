@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const menu = [
+const menu: any[] = [
   // { label: "Inicio", to: "/" },
   // { label: "Nosotros", to: "/nosotros" },
   // { label: "Ciclos", to: "/ciclos" },

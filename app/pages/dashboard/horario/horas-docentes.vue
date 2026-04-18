@@ -16,7 +16,6 @@ import type { HorasDocenteItem } from '#shared/types/horario'
 // Interfaz para el docente transformado (alineada con HorasDocenteItem)
 interface DocenteTransformed extends HorasDocenteItem {
   loading_horas: boolean
-  nombre_completo: string
 }
 
 const globalFilter = ref('')
@@ -170,7 +169,7 @@ const columns: TableColumn<DocenteTransformed>[] = [
     }
   },
   {
-    accessorKey: 'grupos',
+    accessorKey: 'cursos_dictados',
     header: 'Grupos Asignados',
     // cell: ({ row }) =>
     //   h(
@@ -179,7 +178,7 @@ const columns: TableColumn<DocenteTransformed>[] = [
     //     row.getValue("grupos"),
     //   ),
     cell: ({ row }) => {
-      const cursosStr = row.original.grupos
+      const cursosStr = row.original.cursos_dictados
       if (!cursosStr)
         return h(
           'span',
@@ -227,12 +226,13 @@ const columns: TableColumn<DocenteTransformed>[] = [
       ]
 
       return h(
+        // @ts-ignore
         UDropdownMenu,
         {
           content: {
             align: 'end'
           },
-          items
+          items: items as any
         },
         () =>
           h(UButton, {

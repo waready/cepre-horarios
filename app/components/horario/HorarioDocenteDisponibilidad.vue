@@ -200,7 +200,7 @@ function onSaved() {
     :ui="{
       ring: 'ring-1 ring-gray-200 dark:ring-gray-800',
       shadow: 'shadow-md shadow-gray-200/50 dark:shadow-black/20'
-    }"
+    } as any"
     class="overflow-hidden rounded-2xl bg-white dark:bg-gray-900 transition-all"
   >
     <template #header>
@@ -228,7 +228,7 @@ function onSaved() {
             :color="totalHorasFicha ? 'info' : 'primary'"
             variant="subtle"
             size="lg"
-            :ui="{ rounded: 'rounded-full' }"
+            :ui="{ rounded: 'rounded-full' } as any"
             class="px-4 py-1.5 shadow-sm border border-primary/20"
           >
             <UIcon

@@ -37,7 +37,7 @@ const isOpenModal = ref(false)
 const selectedObservacion = ref<ObservacionItem | null>(null)
 const cargando = ref(false)
 const observaciones = ref<ObservacionItem[]>([])
-const table = useTemplateRef('table')
+const table: any = useTemplateRef('table')
 
 const page = ref(1)
 const perPage = ref(10)
@@ -179,8 +179,8 @@ function abrirNuevaObservacion() {
   isOpenModal.value = true
 }
 
-const columnMenuItems = computed(() => {
-  const cols = table.value?.tableApi?.getAllColumns?.() ?? []
+const columnMenuItems: any = computed(() => {
+  const cols: any = table.value?.tableApi?.getAllColumns?.() ?? []
 
   return [
     cols
@@ -631,8 +631,8 @@ const columns: TableColumn<ObservacionItem>[] = [
     <HorarioSeguimientoModal
       v-model:open="isOpenModal"
       :selected-item="selectedObservacion as any"
-      :selected-bloque="selectedObservacion?.bloque_id"
-      :selected-turno="selectedObservacion?.turno_id"
+      :selected-bloque="(selectedObservacion as any)?.bloque_id"
+      :selected-turno="(selectedObservacion as any)?.turno_id"
       @saved="handleSaved"
     />
   </div>
