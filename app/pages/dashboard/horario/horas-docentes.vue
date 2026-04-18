@@ -226,7 +226,7 @@ const columns: TableColumn<DocenteTransformed>[] = [
       ]
 
       return h(
-        // @ts-expect-error
+        // @ts-expect-error This is required because UDropdownMenu props are not compatible with h() typings
         UDropdownMenu,
         {
           content: {
