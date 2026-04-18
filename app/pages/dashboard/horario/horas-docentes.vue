@@ -226,7 +226,7 @@ const columns: TableColumn<DocenteTransformed>[] = [
       ]
 
       return h(
-        // @ts-ignore
+        // @ts-expect-error
         UDropdownMenu,
         {
           content: {
