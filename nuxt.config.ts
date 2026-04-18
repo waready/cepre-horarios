@@ -17,16 +17,10 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'https://cepreapi.waready.org.pe/api'
     }
   },
+
   routeRules: {
     '/': { prerender: true }
   },
-
-  vite: {
-    server: {
-      allowedHosts: true
-    }
-  },
-
 
   compatibilityDate: '2025-01-15',
 
@@ -35,6 +29,14 @@ export default defineNuxtConfig({
       stylistic: {
         commaDangle: 'never',
         braceStyle: '1tbs'
+      }
+    }
+  },
+
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        types: ['@types/node']
       }
     }
   }

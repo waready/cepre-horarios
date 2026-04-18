@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.13.0",
+    "@types/node": "^25.6.0",
     "eslint": "^9.39.2",
     "nuxt-auth-utils": "^0.5.29",
     "typescript": "^5.9.3",
