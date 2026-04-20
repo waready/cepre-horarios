@@ -23,9 +23,11 @@ const { user } = useAuthApi()
 const historial = ref<any[]>([])
 const isLoadingHistorial = ref(false)
 
+console.log(user.value.name)
+
 const isAdmin = computed(() => {
-  const roles = (user.value as any)?.token?.user?.roles || []
-  return roles.includes('Administrador')
+  const roles = (user.value as any).roles || []
+  return roles.includes('Administrador',"xD")
 })
 
 const isEdit = computed(() => {

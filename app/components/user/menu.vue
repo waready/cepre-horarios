@@ -32,7 +32,7 @@ const neutrals = ['slate', 'gray', 'zinc', 'neutral', 'stone']
 const { user: sessionUser, logout } = useAuthApi()
 
 const userName = computed(() => {
-  return (sessionUser.value as any)?.token?.user?.name || 'Usuario'
+  return (sessionUser.value as any).name || 'Usuario'
 })
 
 const user = computed(() => ({
