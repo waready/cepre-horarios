@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['auth', 'admin']
+})
+
 import {
   UButton,
   UBadge,
@@ -244,6 +248,7 @@ const table = useTemplateRef('table')
 
 <template>
   <div
+  
     class="flex-1 divide-y divide-accented w-full min-h-screen bg-gray-50/50 dark:bg-gray-950/50"
   >
     <div class="flex items-center gap-4 px-6 py-4">
@@ -251,7 +256,7 @@ const table = useTemplateRef('table')
         <UInput
           v-model="globalFilter"
           icon="i-lucide-search"
-          placeholder="Buscar docente..."
+          placeholder="Buscar docente...ss"
           size="lg"
           variant="subtle"
           color="primary"

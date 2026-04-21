@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
+const { user } = useUserSession()
+
+const isAdmin = computed(() => {
+  const roles = (user.value as any)?.roles || []
+  return roles.includes('Administrador')
+})
+
 const open = ref(false)
 
 const items: NavigationMenuItem[][] = [
@@ -32,6 +39,7 @@ const items: NavigationMenuItem[][] = [
             open.value = false
           }
         },
+        ...(isAdmin.value ? [
         {
           label: 'Docentes observados',
           to: '/dashboard/horario/observaciones',
@@ -45,7 +53,7 @@ const items: NavigationMenuItem[][] = [
           onSelect: () => {
             open.value = false
           }
-        }
+        }]:[])
       ]
     }
 

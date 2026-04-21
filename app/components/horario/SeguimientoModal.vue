@@ -307,7 +307,7 @@ const payloadSeguimiento = computed(() => {
       tipo: estadoObj?.tipo || 'Seguimiento',
       estado: estadoObj?.value,
       legacy_auth_id: legacyAuthId,
-      legacy_horario_id: selectedCarga.value.cursos_id
+      legacy_horario_id: selectedCarga.value.cursos_id 
     }
   }
 

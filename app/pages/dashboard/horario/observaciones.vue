@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['auth', 'admin']
+})
+
 import { upperFirst } from 'scule'
 import type { TableColumn } from '@nuxt/ui'
 import type { ObservacionItem } from '#shared/types/seguimientoDocente'

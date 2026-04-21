@@ -5,6 +5,13 @@ const emit = defineEmits<{
   (e: 'refresh'): void
 }>()
 
+const {user} = useUserSession()
+
+const isAdmin = computed(() => {
+  const roles = (user.value as any)?.roles || []
+  return roles.includes('Administrador')
+})
+
 type Curso = {
   id?: number
   denominacion?: string
@@ -230,6 +237,7 @@ function onSaved() {
             size="lg"
             :ui="{ rounded: 'rounded-full' } as any"
             class="px-4 py-1.5 shadow-sm border border-primary/20"
+            v-if="isAdmin"
           >
             <UIcon
               name="i-lucide-clock"

@@ -25,7 +25,7 @@ export type Carga = {
   tipo: string | number
   estado: string | number
   usuario?: string | null
-  curso: Curso
+  curso: Curso 
   docente?: Docente | null
 }
 
