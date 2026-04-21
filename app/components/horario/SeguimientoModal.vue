@@ -91,7 +91,7 @@ const gruposOpciones = computed(() =>
 
 const cursosOpciones = computed(() =>
   cargas.value.map(carga => ({
-    label: carga?.curso,
+    label: carga.curso,
     value: carga.id
   }))
 )
@@ -284,10 +284,9 @@ watch(
     await cargarCursosRegistro()
   }
 )
-
 const payloadSeguimiento = computed(() => {
   const item = props.selectedItem as any
-  const legacyAuthId = (user.value as any)?.token?.user?.remote_id
+  const legacyAuthId = (user.value as any).remote_id
   const estadoObj = estadoOpciones.find(o => o.value === formSeguimiento.value.estado)
 
   if (!item && isManualCreate.value) {
@@ -307,7 +306,8 @@ const payloadSeguimiento = computed(() => {
       observacion: formSeguimiento.value.observacion,
       tipo: estadoObj?.tipo || 'Seguimiento',
       estado: estadoObj?.value,
-      legacy_auth_id: legacyAuthId
+      legacy_auth_id: legacyAuthId,
+      legacy_horario_id: selectedCarga.value.cursos_id
     }
   }
 
