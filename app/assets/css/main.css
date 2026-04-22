@@ -16,3 +16,37 @@
   --color-green-900: #0A5331;
   --color-green-950: #052E16;
 }
+/* Custom Scrollbar Styles */
+:root {
+  --sb-track: #f1f5f9;
+}
+
+.dark {
+  --sb-track: #222;
+}
+
+* {
+  /* scrollbar-width: thin; */
+  scrollbar-color: var(--ui-primary) var(--sb-track);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--sb-track);
+  border-radius: 10px;
+
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--ui-primary);
+  border-radius: 10px;
+  border: 2px solid var(--sb-track);
+  background-clip: padding-box;
+}
+
+
+
